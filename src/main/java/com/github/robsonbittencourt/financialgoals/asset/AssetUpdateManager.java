@@ -34,15 +34,7 @@ class AssetUpdateManager {
 	}
 	
 	public AssetUpdate getLastUpdate() {
-		if (updates.isEmpty()) {
-			throw new IndexOutOfBoundsException("Don't exist updates");
-		}
-		
 		return updates.get(updates.size() - 1);
-	}
-
-	public boolean hasUpdates() {
-		return !updates.isEmpty();
 	}
 
 	public Optional<AssetUpdate> getFirstUpdateByDate(LocalDate date) {

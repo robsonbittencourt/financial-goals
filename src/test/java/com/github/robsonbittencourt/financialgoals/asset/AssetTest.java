@@ -25,8 +25,9 @@ public class AssetTest {
 		assertEquals("CDB Itaú Bank", asset.getDescription());
 		assertEquals(FIX, asset.getProfitType());
 		assertEquals(BigDecimal.valueOf(100), asset.getInitialValue());
+		assertEquals(BigDecimal.valueOf(100), asset.getLastUpdate().getGrossValue());
 	}
-
+	
 	@Test
 	public void shouldUseActualDateAsInitialDateWhenCreateAnAsset() {
 		Asset asset = new Asset(LocalDate.now(), "CDB Itaú Bank", FIX, BigDecimal.valueOf(100));
@@ -121,4 +122,5 @@ public class AssetTest {
 
 		assertEquals(BigDecimal.valueOf(0.1), asset.getGrossProfitPercent());
 	}
+	
 }

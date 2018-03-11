@@ -1,8 +1,6 @@
 package com.github.robsonbittencourt.financialgoals.asset;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -49,22 +47,6 @@ public class AssetUpdateManagerTest {
 		assertEquals(manager.getLastUpdate().getGrossValue(), BigDecimal.valueOf(140));
 		assertEquals(manager.getLastUpdate().getRates(), BigDecimal.valueOf(10));
 		assertEquals(manager.getLastUpdate().getTaxes(), BigDecimal.valueOf(30));
-	}
-	
-	@Test
-	public void shouldReturnTrueWhenExistUpdates() {
-		AssetUpdateManager manager = new AssetUpdateManager();
-		
-		manager.updateValues(LocalDate.now(), BigDecimal.valueOf(120), BigDecimal.valueOf(10), BigDecimal.valueOf(20));
-		
-		assertTrue(manager.hasUpdates());
-	}
-	
-	@Test
-	public void shouldReturnFalseWhenDoNotExistUpdates() {
-		AssetUpdateManager manager = new AssetUpdateManager();
-		
-		assertFalse(manager.hasUpdates());
 	}
 	
 	@Test
