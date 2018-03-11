@@ -1,5 +1,5 @@
 package com.github.robsonbittencourt.financialgoals.asset;
 
-enum ProfitType {
+public enum ProfitType {
 	FIX
 }

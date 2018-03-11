@@ -1,29 +1,23 @@
 package com.github.robsonbittencourt.financialgoals.asset;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
-class AssetUpdate {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+class AssetUpdate implements Comparable<AssetUpdate> {
 	
+	private LocalDate date;
 	private BigDecimal grossValue;
 	private BigDecimal rates;
 	private BigDecimal taxes;
 	
-	public AssetUpdate(BigDecimal grossValue, BigDecimal rates, BigDecimal taxes) {
-		this.grossValue = grossValue;
-		this.rates = rates;
-		this.taxes = taxes;
-	}
-
-	public BigDecimal getGrossValue() {
-		return grossValue;
-	}
-	
-	public BigDecimal getRates() {
-		return rates;
-	}
-	
-	public BigDecimal getTaxes() {
-		return taxes;
+	@Override
+	public int compareTo(AssetUpdate update) {
+		return this.date.compareTo(update.getDate());
 	}
 	
 }

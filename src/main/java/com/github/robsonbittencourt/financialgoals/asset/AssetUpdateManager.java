@@ -1,20 +1,23 @@
 package com.github.robsonbittencourt.financialgoals.asset;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 class AssetUpdateManager {
 	
 	private List<AssetUpdate> updates = new ArrayList<>();
 	
-	public void updateGrossValue(BigDecimal grossValue) {
-		updateValues(grossValue, null, null);
+	public void updateGrossValue(LocalDate date, BigDecimal grossValue) {
+		updateValues(date, grossValue, null, null);
 	}
 
-	public void updateValues(BigDecimal grossValue, BigDecimal rates, BigDecimal taxes) {
+	public void updateValues(LocalDate date, BigDecimal grossValue, BigDecimal rates, BigDecimal taxes) {
 		if (updates.isEmpty()) {
-			updates.add(new AssetUpdate(grossValue, rates, taxes));
+			updates.add(new AssetUpdate(date, grossValue, rates, taxes));
 		} else {
 			AssetUpdate lastUpdate = getLastUpdate();
 			
@@ -22,7 +25,7 @@ class AssetUpdateManager {
 			BigDecimal newRates = rates != null ? rates : lastUpdate.getRates();
 			BigDecimal newTaxes = taxes != null ? taxes : lastUpdate.getTaxes();
 			
-			updates.add(new AssetUpdate(newGrossValue, newRates, newTaxes));
+			updates.add(new AssetUpdate(date, newGrossValue, newRates, newTaxes));
 		}
 	}
 
@@ -41,5 +44,19 @@ class AssetUpdateManager {
 	public boolean hasUpdates() {
 		return !updates.isEmpty();
 	}
+
+	public Optional<AssetUpdate> getFirstUpdateByDate(LocalDate date) {
+		return updates.stream()
+				.sorted()
+				.filter(u -> u.getDate().isEqual(date) || date.isAfter(u.getDate()))
+				.findFirst();
+	}	
+	
+	public Optional<AssetUpdate> getLastUpdateByDate(LocalDate date) {
+		return updates.stream()
+				.sorted(Comparator.reverseOrder())
+				.filter(u -> u.getDate().isEqual(date) || date.isAfter(u.getDate()))
+				.findFirst();
+	}	
 	
 }

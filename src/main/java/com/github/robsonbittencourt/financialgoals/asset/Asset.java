@@ -3,6 +3,7 @@ package com.github.robsonbittencourt.financialgoals.asset;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,19 +22,12 @@ public class Asset {
 	@Getter(AccessLevel.NONE)
 	private AssetDepositManager assetDepositManager = new AssetDepositManager();
 	
-	public Asset(String description, ProfitType profitType, BigDecimal initialValue) {
-		this.initialValue = initialValue;
-		this.initialDate = LocalDate.now();
+	public Asset(LocalDate initialDate, String description, ProfitType profitType, BigDecimal initialValue) {
+		this.initialDate = initialDate;
 		this.description = description;
 		this.profitType = profitType;
-	}
-	
-	public BigDecimal getGrossValue() {
-		if (assetUpdateManager.hasUpdates()) {
-			return assetUpdateManager.getLastUpdate().getGrossValue();
-		} else {
-			return initialValue;
-		}
+		this.initialValue = initialValue;
+		assetUpdateManager.updateGrossValue(initialDate, initialValue);
 	}
 	
 	public AssetUpdate getLastUpdate() {
@@ -44,16 +38,41 @@ public class Asset {
 		return assetDepositManager.getDeposits();
 	}
 
-	public void deposit(BigDecimal depositedValue) {
+	public void deposit(LocalDate date, BigDecimal depositedValue) {
 		assetDepositManager.deposit(depositedValue);
 		
 		BigDecimal newGrossValue = getGrossValue().add(depositedValue);
 		
-		assetUpdateManager.updateGrossValue(newGrossValue);
+		assetUpdateManager.updateGrossValue(date, newGrossValue);
 	}
 
-	public void updateValues(BigDecimal grossValue, BigDecimal rates, BigDecimal taxes) {
-		assetUpdateManager.updateValues(grossValue, rates, taxes);
+	public void updateValues(LocalDate date, BigDecimal grossValue, BigDecimal rates, BigDecimal taxes) {
+		assetUpdateManager.updateValues(date, grossValue, rates, taxes);
 	}
+	
+	public BigDecimal getGrossValue() {
+		if (assetUpdateManager.hasUpdates()) {
+			return assetUpdateManager.getLastUpdate().getGrossValue();
+		} else {
+			return initialValue;
+		}
+	}
+	
+	public BigDecimal getGrossProfit() {
+		return this.getGrossValue().subtract(this.getInitialValue());
+	}
+	
+	public BigDecimal getGrossProfit(LocalDate initialDate, LocalDate finalDate) {
+		Optional<AssetUpdate> firstUpdate = assetUpdateManager.getFirstUpdateByDate(initialDate);
+		Optional<AssetUpdate> lastUpdate = assetUpdateManager.getLastUpdateByDate(finalDate);
+		
+		return lastUpdate.get().getGrossValue().subtract(firstUpdate.get().getGrossValue());
+	}
+	
+	public BigDecimal getGrossProfitPercent() {
+		return this.getGrossValue().divide(this.getInitialValue()).subtract(BigDecimal.ONE);
+	}
+
+	
 
 }
