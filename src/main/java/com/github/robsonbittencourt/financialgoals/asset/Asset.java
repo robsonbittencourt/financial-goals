@@ -61,12 +61,20 @@ public class Asset {
 	public BigDecimal getGrossProfit(LocalDate initialDate, LocalDate finalDate) {
 		Optional<AssetUpdate> firstUpdate = assetUpdateManager.getFirstUpdateByDate(initialDate);
 		Optional<AssetUpdate> lastUpdate = assetUpdateManager.getLastUpdateByDate(finalDate);
-
-		return lastUpdate.get().getGrossValue().subtract(firstUpdate.get().getGrossValue());
+		
+		return calculateDiference(lastUpdate.get().getGrossValue(), firstUpdate.get().getGrossValue());
+	}
+	
+	private BigDecimal calculateDiference(BigDecimal value1, BigDecimal value2) {
+		return value1.subtract(value2);
 	}
 
 	public BigDecimal getGrossProfitPercent() {
-		return this.getGrossValue().divide(this.getInitialValue()).subtract(BigDecimal.ONE);
+		return calculateDiferenceInPercent(this.getGrossValue(), this.getInitialValue());
+	}
+	
+	private BigDecimal calculateDiferenceInPercent(BigDecimal value1, BigDecimal value2) {
+		return value1.divide(value2).subtract(BigDecimal.ONE);
 	}
 
 }
