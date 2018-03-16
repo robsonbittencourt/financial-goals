@@ -3,7 +3,8 @@ package com.github.robsonbittencourt.financialgoals.asset;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+
+import com.github.robsonbittencourt.financialgoals.commons.MoneyMath;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -59,22 +60,14 @@ public class Asset {
 	}
 
 	public BigDecimal getGrossProfit(LocalDate initialDate, LocalDate finalDate) {
-		Optional<AssetUpdate> firstUpdate = assetUpdateManager.getFirstUpdateByDate(initialDate);
-		Optional<AssetUpdate> lastUpdate = assetUpdateManager.getLastUpdateByDate(finalDate);
+		AssetUpdate firstUpdate = assetUpdateManager.getFirstUpdateByDate(initialDate);
+		AssetUpdate lastUpdate = assetUpdateManager.getLastUpdateByDate(finalDate);
 		
-		return calculateDiference(lastUpdate.get().getGrossValue(), firstUpdate.get().getGrossValue());
+		return lastUpdate.getGrossValue().subtract(firstUpdate.getGrossValue());
 	}
 	
-	private BigDecimal calculateDiference(BigDecimal value1, BigDecimal value2) {
-		return value1.subtract(value2);
-	}
-
 	public BigDecimal getGrossProfitPercent() {
-		return calculateDiferenceInPercent(this.getGrossValue(), this.getInitialValue());
-	}
-	
-	private BigDecimal calculateDiferenceInPercent(BigDecimal value1, BigDecimal value2) {
-		return value1.divide(value2).subtract(BigDecimal.ONE);
+		return MoneyMath.calculateDiferenceInPercent(this.getInitialValue(), this.getGrossValue());
 	}
 
 }

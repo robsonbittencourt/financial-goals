@@ -1,11 +1,11 @@
 package com.github.robsonbittencourt.financialgoals.asset;
 
+import static java.util.Collections.reverseOrder;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 class AssetUpdateManager {
 	
@@ -37,18 +37,20 @@ class AssetUpdateManager {
 		return updates.get(updates.size() - 1);
 	}
 
-	public Optional<AssetUpdate> getFirstUpdateByDate(LocalDate date) {
+	public AssetUpdate getFirstUpdateByDate(LocalDate date) {
 		return updates.stream()
-				.sorted()
-				.filter(u -> u.getDate().isEqual(date) || date.isAfter(u.getDate()))
-				.findFirst();
-	}	
+					  .sorted()
+			          .filter(u -> u.getDate().equals(date) || u.getDate().isAfter(date))
+			          .findFirst()
+			          .orElseThrow(UpdateNotFoundException::new);
+	}
 	
-	public Optional<AssetUpdate> getLastUpdateByDate(LocalDate date) {
+	public AssetUpdate getLastUpdateByDate(LocalDate date) {
 		return updates.stream()
-				.sorted(Comparator.reverseOrder())
-				.filter(u -> u.getDate().isEqual(date) || date.isAfter(u.getDate()))
-				.findFirst();
-	}	
+				      .sorted(reverseOrder())
+				      .filter(u -> u.getDate().equals(date) || u.getDate().isBefore(date))
+				      .findFirst()
+				      .orElseThrow(UpdateNotFoundException::new);
+	}
 	
 }
