@@ -11,8 +11,8 @@ public class InvestmentReturn {
 	private BigDecimal percent;
 	
 	public InvestmentReturn(BigDecimal value, BigDecimal percent) {
-		this.value = value.setScale(2);
-		this.percent = percent.setScale(2);
+		this.value = value.setScale(4);
+		this.percent = percent.setScale(4);
 	}
 	
 }

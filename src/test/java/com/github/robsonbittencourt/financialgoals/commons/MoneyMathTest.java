@@ -18,8 +18,8 @@ public class MoneyMathTest {
 
 		InvestmentReturn investmentReturn = MoneyMath.calculateInvestmentReturn(number1, number2);
 		
-		assertEquals(new BigDecimal("50.00"), investmentReturn.getValue());
-		assertEquals(new BigDecimal("0.10"), investmentReturn.getPercent());
+		assertEquals(new BigDecimal("50.0000"), investmentReturn.getValue());
+		assertEquals(new BigDecimal("0.1000"), investmentReturn.getPercent());
 	}
 
 }

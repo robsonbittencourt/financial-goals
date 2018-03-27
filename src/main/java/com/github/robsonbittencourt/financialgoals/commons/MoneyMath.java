@@ -9,7 +9,7 @@ public class MoneyMath {
 
 	public static InvestmentReturn calculateInvestmentReturn(BigDecimal initialValue, BigDecimal finalValue) {
 		BigDecimal value = finalValue.subtract(initialValue);
-		BigDecimal percent = finalValue.divide(initialValue, 2, RoundingMode.HALF_UP).subtract(BigDecimal.ONE);
+		BigDecimal percent = finalValue.divide(initialValue, 4, RoundingMode.HALF_UP).subtract(BigDecimal.ONE);
 		
 		return new InvestmentReturn(value, percent);
 	}

@@ -14,16 +14,16 @@ public class BigDecimalHelperTest {
 
 		BigDecimal newValue = BigDecimalHelper.setDefaultScale(value);
 
-		assertEquals(new BigDecimal("10.00"), newValue);
+		assertEquals(new BigDecimal("10.0000"), newValue);
 	}
 
 	@Test
 	public void shouldUseHalfUpToRoundingValue() {
-		BigDecimal value = new BigDecimal("10.998");
+		BigDecimal value = new BigDecimal("10.99866");
 
 		BigDecimal newValue = BigDecimalHelper.setDefaultScale(value);
 
-		assertEquals(new BigDecimal("11.00"), newValue);
+		assertEquals(new BigDecimal("10.9987"), newValue);
 	}
 
 }
