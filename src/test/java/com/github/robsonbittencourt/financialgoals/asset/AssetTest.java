@@ -25,8 +25,8 @@ public class AssetTest {
 
 		assertEquals("CDB Itaú Bank", asset.getDescription());
 		assertEquals(FIX, asset.getProfitType());
-		assertEquals(valueOf(100), asset.getInitialValue());
-		assertEquals(valueOf(100), asset.getLastUpdate().getGrossValue());
+		assertEquals(new BigDecimal("100.00"), asset.getInitialValue());
+		assertEquals(new BigDecimal("100.00"), asset.getLastUpdate().getGrossValue());
 	}
 	
 	@Test
@@ -51,7 +51,7 @@ public class AssetTest {
 
 		asset.deposit(LocalDate.now(), valueOf(100));
 
-		assertEquals(asset.getGrossValue(), valueOf(200));
+		assertEquals(new BigDecimal("200.00"), asset.getGrossValue());
 	}
 
 	@Test
@@ -60,16 +60,17 @@ public class AssetTest {
 
 		asset.updateValues(LocalDate.now(), valueOf(120), valueOf(10), valueOf(15));
 
-		assertEquals(valueOf(120), asset.getLastUpdate().getGrossValue());
-		assertEquals(valueOf(10), asset.getLastUpdate().getRates());
-		assertEquals(valueOf(15), asset.getLastUpdate().getTaxes());
+		assertEquals(new BigDecimal("120.00"), asset.getLastUpdate().getGrossValue());
+		assertEquals(new BigDecimal("10.00"), asset.getLastUpdate().getRates());
+		assertEquals(new BigDecimal("15.00"), asset.getLastUpdate().getTaxes());
 	}
 
 	@Test
 	public void shouldCalculateGrossProfitWhenDoNotHaveUpdates() {
 		Asset asset = new Asset(LocalDate.now(), "CDB Itaú Bank", FIX, valueOf(100));
 
-		assertEquals(valueOf(0), asset.getGrossProfit());
+		assertEquals(new BigDecimal("0.00"), asset.getGrossProfit().getValue());
+		assertEquals(new BigDecimal("0.00"), asset.getGrossProfit().getPercent());
 	}
 
 	@Test
@@ -78,7 +79,8 @@ public class AssetTest {
 
 		asset.updateValues(LocalDate.now(), valueOf(120), valueOf(10), valueOf(15));
 
-		assertEquals(valueOf(20), asset.getGrossProfit());
+		assertEquals(new BigDecimal("20.00"), asset.getGrossProfit().getValue());
+		assertEquals(new BigDecimal("0.20"), asset.getGrossProfit().getPercent());
 	}
 
 	@Test
@@ -88,40 +90,44 @@ public class AssetTest {
 		asset.updateValues(LocalDate.now(), valueOf(120), valueOf(10), valueOf(15));
 		asset.updateValues(LocalDate.now(), valueOf(150), valueOf(10), valueOf(15));
 
-		assertEquals(valueOf(50), asset.getGrossProfit());
+		assertEquals(new BigDecimal("50.00"), asset.getGrossProfit().getValue());
+		assertEquals(new BigDecimal("0.50"), asset.getGrossProfit().getPercent());
 	}
 
 	@Test
 	public void shouldCalculateGrossProfitWhenHaveMoreThanOneUpdateAndConsiderAPeriod() {
 		Asset asset = new Asset(LocalDate.of(2018, FEBRUARY, 10), "CDB Itaú Bank", FIX, valueOf(100));
 
-		asset.updateValues(LocalDate.of(2018, MARCH, 10), valueOf(120), valueOf(10),
-				valueOf(15));
-		asset.updateValues(LocalDate.of(2018, APRIL, 10), valueOf(150), valueOf(10),
-				valueOf(15));
-		asset.updateValues(LocalDate.of(2018, MAY, 10), valueOf(200), valueOf(10),
-				valueOf(15));
+		asset.updateValues(LocalDate.of(2018, MARCH, 10), valueOf(120), valueOf(10), valueOf(15));
+		asset.updateValues(LocalDate.of(2018, APRIL, 10), valueOf(150), valueOf(10), valueOf(15));
+		asset.updateValues(LocalDate.of(2018, MAY, 10), valueOf(200), valueOf(10), valueOf(15));
+		
+		InvestmentReturn investmentReturn = asset.getGrossProfit(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20));
 
-		assertEquals(valueOf(50), asset.getGrossProfit(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20)));
+		assertEquals(new BigDecimal("50.00"), investmentReturn.getValue());
+		assertEquals(new BigDecimal("0.33"), investmentReturn.getPercent());
 	}
 	
 	@Test
 	public void shouldUseSameUpdateWhenHaveOnlyOneUpdateOnPeriod() {
 		Asset asset = new Asset(LocalDate.of(2018, FEBRUARY, 10), "CDB Itaú Bank", FIX, valueOf(100));
 
-		asset.updateValues(LocalDate.of(2018, MARCH, 10), valueOf(120), valueOf(10),
-				valueOf(15));
+		asset.updateValues(LocalDate.of(2018, MARCH, 10), valueOf(120), valueOf(10), valueOf(15));
+		
+		InvestmentReturn investmentReturn = asset.getGrossProfit(LocalDate.of(2018, FEBRUARY, 10), LocalDate.of(2018, MARCH, 20));
 
-		assertEquals(valueOf(20), asset.getGrossProfit(LocalDate.of(2018, FEBRUARY, 10), LocalDate.of(2018, MARCH, 20)));
+		assertEquals(new BigDecimal("20.00"), investmentReturn.getValue());
+		assertEquals(new BigDecimal("0.20"), investmentReturn.getPercent());
 	}
 
 	@Test
-	public void shouldCalculateGrossProfitPercent() {
+	public void shouldCalculateGrossProfit() {
 		Asset asset = new Asset(LocalDate.now(), "CDB Itaú Bank", FIX, valueOf(500));
 
 		asset.updateValues(LocalDate.now(), valueOf(550), valueOf(10), valueOf(15));
-
-		assertEquals(valueOf(0.1), asset.getGrossProfitPercent());
+		
+		assertEquals(new BigDecimal("50.00"), asset.getGrossProfit().getValue());
+		assertEquals(new BigDecimal("0.10"), asset.getGrossProfit().getPercent());
 	}
 	
 }

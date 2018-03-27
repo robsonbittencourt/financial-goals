@@ -1,22 +1,25 @@
 package com.github.robsonbittencourt.financialgoals.commons;
 
+import static java.math.BigDecimal.valueOf;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 
 import org.junit.Test;
 
+import com.github.robsonbittencourt.financialgoals.asset.InvestmentReturn;
+
 public class MoneyMathTest {
 	
-	
 	@Test
-	public void shouldCalculateDiferenceInPercentBetweenFirstAndSecondNumber() {
-		BigDecimal number1 = BigDecimal.valueOf(500);
-		BigDecimal number2 = BigDecimal.valueOf(550);
+	public void shouldCalculateDiferenceInValueAndInPercentBetweenFirstAndSecondNumber() {
+		BigDecimal number1 = valueOf(500);
+		BigDecimal number2 = valueOf(550);
 
-		BigDecimal result = MoneyMath.calculateDiferenceInPercent(number1, number2);
+		InvestmentReturn investmentReturn = MoneyMath.calculateInvestmentReturn(number1, number2);
 		
-		assertEquals(BigDecimal.valueOf(0.1), result);
+		assertEquals(new BigDecimal("50.00"), investmentReturn.getValue());
+		assertEquals(new BigDecimal("0.10"), investmentReturn.getPercent());
 	}
 
 }

@@ -1,10 +1,11 @@
 package com.github.robsonbittencourt.financialgoals.asset;
 
+import static com.github.robsonbittencourt.financialgoals.commons.BigDecimalHelper.setDefaultScale;
+import static com.github.robsonbittencourt.financialgoals.commons.MoneyMath.calculateInvestmentReturn;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-
-import com.github.robsonbittencourt.financialgoals.commons.MoneyMath;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class Asset {
 		this.initialDate = initialDate;
 		this.description = description;
 		this.profitType = profitType;
-		this.initialValue = initialValue;
+		this.initialValue = setDefaultScale(initialValue);
 		assetUpdateManager.updateGrossValue(initialDate, initialValue);
 	}
 
@@ -55,19 +56,15 @@ public class Asset {
 		return assetUpdateManager.getLastUpdate().getGrossValue();
 	}
 
-	public BigDecimal getGrossProfit() {
-		return this.getGrossValue().subtract(this.getInitialValue());
+	public InvestmentReturn getGrossProfit() {
+		return calculateInvestmentReturn(this.getInitialValue(), this.getGrossValue());
 	}
 
-	public BigDecimal getGrossProfit(LocalDate initialDate, LocalDate finalDate) {
+	public InvestmentReturn getGrossProfit(LocalDate initialDate, LocalDate finalDate) {
 		AssetUpdate firstUpdate = assetUpdateManager.getFirstUpdateByDate(initialDate);
 		AssetUpdate lastUpdate = assetUpdateManager.getLastUpdateByDate(finalDate);
 		
-		return lastUpdate.getGrossValue().subtract(firstUpdate.getGrossValue());
+		return calculateInvestmentReturn(firstUpdate.getGrossValue(), lastUpdate.getGrossValue());
 	}
 	
-	public BigDecimal getGrossProfitPercent() {
-		return MoneyMath.calculateDiferenceInPercent(this.getInitialValue(), this.getGrossValue());
-	}
-
 }

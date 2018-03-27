@@ -1,11 +1,17 @@
 package com.github.robsonbittencourt.financialgoals.commons;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import com.github.robsonbittencourt.financialgoals.asset.InvestmentReturn;
 
 public class MoneyMath {
 
-	public static BigDecimal calculateDiferenceInPercent(BigDecimal number1, BigDecimal number2) {
-		return number2.divide(number1).subtract(BigDecimal.ONE);
+	public static InvestmentReturn calculateInvestmentReturn(BigDecimal initialValue, BigDecimal finalValue) {
+		BigDecimal value = finalValue.subtract(initialValue);
+		BigDecimal percent = finalValue.divide(initialValue, 2, RoundingMode.HALF_UP).subtract(BigDecimal.ONE);
+		
+		return new InvestmentReturn(value, percent);
 	}
 
 }
