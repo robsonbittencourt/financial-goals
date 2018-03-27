@@ -130,4 +130,28 @@ public class AssetTest {
 		assertEquals(new BigDecimal("0.10"), asset.getGrossProfit().getPercent());
 	}
 	
+	@Test
+	public void shouldReturnGrossProfitMinusRatesAndTaxesAsNetProfit() {
+		Asset asset = new Asset(LocalDate.now(), "CDB Itaú Bank", FIX, valueOf(500));
+
+		asset.updateValues(LocalDate.now(), valueOf(550), valueOf(10), valueOf(15));
+		
+		assertEquals(new BigDecimal("25.00"), asset.getNetProfit().getValue());
+		assertEquals(new BigDecimal("0.05"), asset.getNetProfit().getPercent());
+	}
+	
+	@Test
+	public void shouldCalculateNetProfitWhenHaveMoreThanOneUpdateAndConsiderAPeriod() {
+		Asset asset = new Asset(LocalDate.of(2018, FEBRUARY, 10), "CDB Itaú Bank", FIX, valueOf(100));
+
+		asset.updateValues(LocalDate.of(2018, MARCH, 10), valueOf(120), valueOf(10), valueOf(15));
+		asset.updateValues(LocalDate.of(2018, APRIL, 10), valueOf(150), valueOf(10), valueOf(15));
+		asset.updateValues(LocalDate.of(2018, MAY, 10), valueOf(200), valueOf(15), valueOf(20));
+		
+		InvestmentReturn investmentReturn = asset.getNetProfit(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20));
+
+		assertEquals(new BigDecimal("15.00"), investmentReturn.getValue());
+		assertEquals(new BigDecimal("0.10"), investmentReturn.getPercent());
+	}
+	
 }

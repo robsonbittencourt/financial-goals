@@ -63,8 +63,21 @@ public class Asset {
 	public InvestmentReturn getGrossProfit(LocalDate initialDate, LocalDate finalDate) {
 		AssetUpdate firstUpdate = assetUpdateManager.getFirstUpdateByDate(initialDate);
 		AssetUpdate lastUpdate = assetUpdateManager.getLastUpdateByDate(finalDate);
-		
+
 		return calculateInvestmentReturn(firstUpdate.getGrossValue(), lastUpdate.getGrossValue());
 	}
+
+	public InvestmentReturn getNetProfit() {
+		BigDecimal netProfit = assetUpdateManager.getLastUpdate().getNetValue();
+		
+		return calculateInvestmentReturn(this.getInitialValue(), netProfit);
+	}
 	
+	public InvestmentReturn getNetProfit(LocalDate initialDate, LocalDate finalDate) {
+		AssetUpdate firstUpdate = assetUpdateManager.getFirstUpdateByDate(initialDate);
+		AssetUpdate lastUpdate = assetUpdateManager.getLastUpdateByDate(finalDate);
+		
+		return calculateInvestmentReturn(firstUpdate.getGrossValue(), lastUpdate.getNetValue());
+	}
+
 }

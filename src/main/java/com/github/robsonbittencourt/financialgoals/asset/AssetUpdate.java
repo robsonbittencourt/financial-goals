@@ -27,4 +27,8 @@ class AssetUpdate implements Comparable<AssetUpdate> {
 		return this.date.compareTo(update.getDate());
 	}
 	
+	public BigDecimal getNetValue() {
+		return this.getGrossValue().subtract(this.getRates()).subtract(this.getTaxes());
+	}
+	
 }
