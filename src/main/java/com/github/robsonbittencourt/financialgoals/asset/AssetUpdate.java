@@ -11,9 +11,12 @@ import lombok.Getter;
 class AssetUpdate implements Comparable<AssetUpdate> {
 	
 	private LocalDate date;
+	private BigDecimal transactionValue;
 	private BigDecimal grossValue;
 	private BigDecimal rates;
 	private BigDecimal taxes;
+	private BigDecimal shareValue;
+	private BigDecimal shares;
 	
 	@Override
 	public int compareTo(AssetUpdate update) {

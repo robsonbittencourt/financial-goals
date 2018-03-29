@@ -7,7 +7,7 @@ public class Indicator {
 	
 	public BigDecimal getIndicator(IndicatorType type, LocalDate date, LocalDate finalDate) {
 		//TODO mock
-		return new BigDecimal("0.0054").setScale(4);
+		return new BigDecimal("0.00054").setScale(5);
 	}
 	
 }

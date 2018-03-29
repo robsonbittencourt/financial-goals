@@ -22,6 +22,8 @@ public class AssetUpdateManagerTest {
 	
 	@Test
 	public void shouldUpdateValuesOfAsset() {
+		manager.updateGrossValue(LocalDate.now(), valueOf(100));
+		
 		manager.updateValues(LocalDate.now(), valueOf(120), valueOf(10), valueOf(20));
 		
 		assertThat(valueOf(120), is(equalsBigDecimal(manager.getLastUpdate().getGrossValue())));
@@ -31,12 +33,14 @@ public class AssetUpdateManagerTest {
 	
 	@Test
 	public void shouldUpdateValuesOfAssetKeepingHistory() {
+		manager.updateGrossValue(LocalDate.now(), valueOf(100));
+		
 		manager.updateValues(LocalDate.now(), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.now(), valueOf(140), valueOf(10), valueOf(30));
 		
-		assertThat(valueOf(120), is(equalsBigDecimal(manager.getUpdates().get(0).getGrossValue())));
-		assertThat(valueOf(10), is(equalsBigDecimal(manager.getUpdates().get(0).getRates())));
-		assertThat(valueOf(20), is(equalsBigDecimal(manager.getUpdates().get(0).getTaxes())));
+		assertThat(valueOf(120), is(equalsBigDecimal(manager.getUpdates().get(1).getGrossValue())));
+		assertThat(valueOf(10), is(equalsBigDecimal(manager.getUpdates().get(1).getRates())));
+		assertThat(valueOf(20), is(equalsBigDecimal(manager.getUpdates().get(1).getTaxes())));
 		
 		assertThat(valueOf(140), is(equalsBigDecimal(manager.getLastUpdate().getGrossValue())));
 		assertThat(valueOf(10), is(equalsBigDecimal(manager.getLastUpdate().getRates())));
@@ -45,10 +49,12 @@ public class AssetUpdateManagerTest {
 	
 	@Test
 	public void shouldNotUpdateValueWhenPassedNullValue() {
+		manager.updateGrossValue(LocalDate.now(), valueOf(100));
+		
 		manager.updateValues(LocalDate.now(), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.now(), null, null, null);
 		
-		assertEquals(manager.getUpdates().size(), 2);
+		assertEquals(manager.getUpdates().size(), 3);
 		
 		assertThat(valueOf(120), is(equalsBigDecimal(manager.getUpdates().get(1).getGrossValue())));
 		assertThat(valueOf(10), is(equalsBigDecimal(manager.getUpdates().get(1).getRates())));
@@ -62,6 +68,8 @@ public class AssetUpdateManagerTest {
 	
 	@Test
 	public void shouldReturnFirstUpdateByDateWithEqualDate() {
+		manager.updateGrossValue(LocalDate.now(), valueOf(100));
+		
 		manager.updateValues(LocalDate.of(2018, 3, 20), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.of(2018, 4, 15), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.of(2018, 6, 22), valueOf(120), valueOf(10), valueOf(20));
@@ -75,6 +83,8 @@ public class AssetUpdateManagerTest {
 	
 	@Test
 	public void shouldReturnFirstUpdateByDateWithProximityDate() {
+		manager.updateGrossValue(LocalDate.now(), valueOf(100));
+		
 		manager.updateValues(LocalDate.of(2018, 3, 20), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.of(2018, 4, 15), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.of(2018, 6, 22), valueOf(120), valueOf(10), valueOf(20));
@@ -88,6 +98,8 @@ public class AssetUpdateManagerTest {
 	
 	@Test(expected=UpdateNotFoundException.class)
 	public void shoultThrowExceptionWhenDoNotExistAnUpdateWithInformedDate() {
+		manager.updateGrossValue(LocalDate.now(), valueOf(100));
+		
 		manager.updateValues(LocalDate.of(2018, 3, 20), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.of(2018, 4, 15), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.of(2018, 6, 22), valueOf(120), valueOf(10), valueOf(20));
@@ -99,6 +111,8 @@ public class AssetUpdateManagerTest {
 	
 	@Test
 	public void shouldReturnLastUpdateByDateWithEqualDate() {
+		manager.updateGrossValue(LocalDate.now(), valueOf(100));
+		
 		manager.updateValues(LocalDate.of(2018, 3, 20), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.of(2018, 4, 15), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.of(2018, 6, 22), valueOf(120), valueOf(10), valueOf(20));
@@ -112,6 +126,8 @@ public class AssetUpdateManagerTest {
 	
 	@Test
 	public void shouldReturnLastUpdateByDateWithProximityDate() {
+		manager.updateGrossValue(LocalDate.now(), valueOf(100));
+		
 		manager.updateValues(LocalDate.of(2018, 3, 20), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.of(2018, 4, 15), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.of(2018, 6, 22), valueOf(120), valueOf(10), valueOf(20));
