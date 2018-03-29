@@ -1,12 +1,15 @@
 package com.github.robsonbittencourt.financialgoals.asset;
 
 import static com.github.robsonbittencourt.financialgoals.asset.ProfitType.FIX;
+import static com.github.robsonbittencourt.financialgoals.util.BigDecimalMatcher.equalsBigDecimal;
 import static java.math.BigDecimal.valueOf;
 import static java.time.Month.APRIL;
 import static java.time.Month.FEBRUARY;
 import static java.time.Month.MARCH;
 import static java.time.Month.MAY;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,8 +28,8 @@ public class AssetTest {
 
 		assertEquals("CDB Itaú Bank", asset.getDescription());
 		assertEquals(FIX, asset.getProfitType());
-		assertEquals(new BigDecimal("100.0000"), asset.getInitialValue());
-		assertEquals(new BigDecimal("100.0000"), asset.getLastUpdate().getGrossValue());
+		assertThat(valueOf(100), is(equalsBigDecimal(asset.getInitialValue())));
+		assertThat(valueOf(100), is(equalsBigDecimal(asset.getLastUpdate().getGrossValue())));
 	}
 	
 	@Test
@@ -42,7 +45,7 @@ public class AssetTest {
 
 		asset.deposit(LocalDate.now(), valueOf(100));
 
-		assertEquals(asset.getAssetDeposits().get(0).getValue(), valueOf(100));
+		assertThat(valueOf(100), is(equalsBigDecimal(asset.getAssetDeposits().get(0).getValue())));
 	}
 
 	@Test
@@ -51,7 +54,7 @@ public class AssetTest {
 
 		asset.deposit(LocalDate.now(), valueOf(100));
 
-		assertEquals(new BigDecimal("200.0000"), asset.getGrossValue());
+		assertThat(valueOf(200), is(equalsBigDecimal(asset.getGrossValue())));
 	}
 
 	@Test
@@ -59,18 +62,18 @@ public class AssetTest {
 		Asset asset = new Asset(LocalDate.now(), "CDB Itaú Bank", FIX, valueOf(100));
 
 		asset.updateValues(LocalDate.now(), valueOf(120), valueOf(10), valueOf(15));
-
-		assertEquals(new BigDecimal("120.0000"), asset.getLastUpdate().getGrossValue());
-		assertEquals(new BigDecimal("10.0000"), asset.getLastUpdate().getRates());
-		assertEquals(new BigDecimal("15.0000"), asset.getLastUpdate().getTaxes());
+		
+		assertThat(valueOf(120), is(equalsBigDecimal(asset.getLastUpdate().getGrossValue())));
+		assertThat(valueOf(10), is(equalsBigDecimal(asset.getLastUpdate().getRates())));
+		assertThat(valueOf(15), is(equalsBigDecimal(asset.getLastUpdate().getTaxes())));
 	}
 
 	@Test
 	public void shouldCalculateGrossProfitWhenDoNotHaveUpdates() {
 		Asset asset = new Asset(LocalDate.now(), "CDB Itaú Bank", FIX, valueOf(100));
 
-		assertEquals(new BigDecimal("0.0000"), asset.getGrossProfit().getValue());
-		assertEquals(new BigDecimal("0.0000"), asset.getGrossProfit().getPercent());
+		assertThat(valueOf(0), is(equalsBigDecimal(asset.getGrossProfit().getValue())));
+		assertThat(valueOf(0), is(equalsBigDecimal(asset.getGrossProfit().getPercent())));
 	}
 
 	@Test
@@ -78,9 +81,9 @@ public class AssetTest {
 		Asset asset = new Asset(LocalDate.now(), "CDB Itaú Bank", FIX, valueOf(100));
 
 		asset.updateValues(LocalDate.now(), valueOf(120), valueOf(10), valueOf(15));
-
-		assertEquals(new BigDecimal("20.0000"), asset.getGrossProfit().getValue());
-		assertEquals(new BigDecimal("0.2000"), asset.getGrossProfit().getPercent());
+		
+		assertThat(valueOf(20), is(equalsBigDecimal(asset.getGrossProfit().getValue())));
+		assertThat(valueOf(0.2), is(equalsBigDecimal(asset.getGrossProfit().getPercent())));
 	}
 
 	@Test
@@ -90,8 +93,8 @@ public class AssetTest {
 		asset.updateValues(LocalDate.now(), valueOf(120), valueOf(10), valueOf(15));
 		asset.updateValues(LocalDate.now(), valueOf(150), valueOf(10), valueOf(15));
 
-		assertEquals(new BigDecimal("50.0000"), asset.getGrossProfit().getValue());
-		assertEquals(new BigDecimal("0.5000"), asset.getGrossProfit().getPercent());
+		assertThat(valueOf(50), is(equalsBigDecimal(asset.getGrossProfit().getValue())));
+		assertThat(valueOf(0.5), is(equalsBigDecimal(asset.getGrossProfit().getPercent())));
 	}
 
 	@Test
@@ -104,8 +107,8 @@ public class AssetTest {
 		
 		InvestmentReturn investmentReturn = asset.getGrossProfit(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20));
 
-		assertEquals(new BigDecimal("50.0000"), investmentReturn.getValue());
-		assertEquals(new BigDecimal("0.3333"), investmentReturn.getPercent());
+		assertThat(valueOf(50), is(equalsBigDecimal(investmentReturn.getValue())));
+		assertThat(valueOf(0.3333333333), is(equalsBigDecimal(investmentReturn.getPercent())));
 	}
 	
 	@Test
@@ -116,8 +119,8 @@ public class AssetTest {
 		
 		InvestmentReturn investmentReturn = asset.getGrossProfit(LocalDate.of(2018, FEBRUARY, 10), LocalDate.of(2018, MARCH, 20));
 
-		assertEquals(new BigDecimal("20.0000"), investmentReturn.getValue());
-		assertEquals(new BigDecimal("0.2000"), investmentReturn.getPercent());
+		assertThat(valueOf(20), is(equalsBigDecimal(investmentReturn.getValue())));
+		assertThat(valueOf(0.2), is(equalsBigDecimal(investmentReturn.getPercent())));
 	}
 
 	@Test
@@ -126,8 +129,8 @@ public class AssetTest {
 
 		asset.updateValues(LocalDate.now(), valueOf(550), valueOf(10), valueOf(15));
 		
-		assertEquals(new BigDecimal("50.0000"), asset.getGrossProfit().getValue());
-		assertEquals(new BigDecimal("0.1000"), asset.getGrossProfit().getPercent());
+		assertThat(valueOf(50), is(equalsBigDecimal(asset.getGrossProfit().getValue())));
+		assertThat(valueOf(0.1), is(equalsBigDecimal(asset.getGrossProfit().getPercent())));
 	}
 	
 	@Test
@@ -136,8 +139,8 @@ public class AssetTest {
 
 		asset.updateValues(LocalDate.now(), valueOf(550), valueOf(10), valueOf(15));
 		
-		assertEquals(new BigDecimal("25.0000"), asset.getNetProfit().getValue());
-		assertEquals(new BigDecimal("0.0500"), asset.getNetProfit().getPercent());
+		assertThat(valueOf(25), is(equalsBigDecimal(asset.getNetProfit().getValue())));
+		assertThat(valueOf(0.05), is(equalsBigDecimal(asset.getNetProfit().getPercent())));
 	}
 	
 	@Test
@@ -149,9 +152,9 @@ public class AssetTest {
 		asset.updateValues(LocalDate.of(2018, MAY, 10), valueOf(200), valueOf(15), valueOf(20));
 		
 		InvestmentReturn investmentReturn = asset.getNetProfit(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20));
-
-		assertEquals(new BigDecimal("15.0000"), investmentReturn.getValue());
-		assertEquals(new BigDecimal("0.1000"), investmentReturn.getPercent());
+		
+		assertThat(valueOf(15), is(equalsBigDecimal(investmentReturn.getValue())));
+		assertThat(valueOf(0.1), is(equalsBigDecimal(investmentReturn.getPercent())));
 	}
 	
 	@Test
@@ -160,8 +163,8 @@ public class AssetTest {
 
 		asset.updateValues(LocalDate.now(), valueOf(550), valueOf(10), valueOf(15));
 		
-		assertEquals(new BigDecimal("22.0300"), asset.getRealProfit().getValue());
-		assertEquals(new BigDecimal("0.0441"), asset.getRealProfit().getPercent());
+		assertThat(valueOf(22.03), is(equalsBigDecimal(asset.getRealProfit().getValue())));
+		assertThat(valueOf(0.04406), is(equalsBigDecimal(asset.getRealProfit().getPercent())));
 	}
 	
 	@Test
@@ -173,8 +176,8 @@ public class AssetTest {
 		asset.updateValues(LocalDate.of(2018, MAY, 10), valueOf(200), valueOf(15), valueOf(20));
 		
 		InvestmentReturn investmentReturn = asset.getRealProfit(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20));
-
-		assertEquals(new BigDecimal("13.9200"), investmentReturn.getValue());
-		assertEquals(new BigDecimal("0.0928"), investmentReturn.getPercent());
+		
+		assertThat(valueOf(13.92), is(equalsBigDecimal(investmentReturn.getValue())));
+		assertThat(valueOf(0.0928), is(equalsBigDecimal(investmentReturn.getPercent())));
 	}
 }

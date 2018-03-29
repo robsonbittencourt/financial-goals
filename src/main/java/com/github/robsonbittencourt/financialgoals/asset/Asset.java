@@ -1,6 +1,5 @@
 package com.github.robsonbittencourt.financialgoals.asset;
 
-import static com.github.robsonbittencourt.financialgoals.commons.BigDecimalHelper.setDefaultScale;
 import static com.github.robsonbittencourt.financialgoals.commons.MoneyMath.calculateInvestmentReturn;
 import static com.github.robsonbittencourt.financialgoals.indicators.IndicatorType.INFLATION;
 
@@ -31,7 +30,7 @@ public class Asset {
 		this.initialDate = initialDate;
 		this.description = description;
 		this.profitType = profitType;
-		this.initialValue = setDefaultScale(initialValue);
+		this.initialValue = initialValue;
 		assetUpdateManager.updateGrossValue(initialDate, initialValue);
 	}
 

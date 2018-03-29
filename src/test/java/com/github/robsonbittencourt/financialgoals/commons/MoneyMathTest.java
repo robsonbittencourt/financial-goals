@@ -1,7 +1,9 @@
 package com.github.robsonbittencourt.financialgoals.commons;
 
+import static com.github.robsonbittencourt.financialgoals.util.BigDecimalMatcher.equalsBigDecimal;
 import static java.math.BigDecimal.valueOf;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.math.BigDecimal;
 
@@ -18,8 +20,8 @@ public class MoneyMathTest {
 
 		InvestmentReturn investmentReturn = MoneyMath.calculateInvestmentReturn(number1, number2);
 		
-		assertEquals(new BigDecimal("50.0000"), investmentReturn.getValue());
-		assertEquals(new BigDecimal("0.1000"), investmentReturn.getPercent());
+		assertThat(valueOf(50), is(equalsBigDecimal(investmentReturn.getValue())));
+		assertThat(valueOf(0.1), is(equalsBigDecimal(investmentReturn.getPercent())));
 	}
 
 }

@@ -1,9 +1,11 @@
 package com.github.robsonbittencourt.financialgoals.asset;
 
+import static com.github.robsonbittencourt.financialgoals.util.BigDecimalMatcher.equalsBigDecimal;
 import static java.math.BigDecimal.valueOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.junit.Before;
@@ -22,9 +24,9 @@ public class AssetUpdateManagerTest {
 	public void shouldUpdateValuesOfAsset() {
 		manager.updateValues(LocalDate.now(), valueOf(120), valueOf(10), valueOf(20));
 		
-		assertEquals(new BigDecimal("120.0000"), manager.getLastUpdate().getGrossValue());
-		assertEquals(new BigDecimal("10.0000"), manager.getLastUpdate().getRates());
-		assertEquals(new BigDecimal("20.0000"), manager.getLastUpdate().getTaxes());
+		assertThat(valueOf(120), is(equalsBigDecimal(manager.getLastUpdate().getGrossValue())));
+		assertThat(valueOf(10), is(equalsBigDecimal(manager.getLastUpdate().getRates())));
+		assertThat(valueOf(20), is(equalsBigDecimal(manager.getLastUpdate().getTaxes())));
 	}
 	
 	@Test
@@ -32,13 +34,13 @@ public class AssetUpdateManagerTest {
 		manager.updateValues(LocalDate.now(), valueOf(120), valueOf(10), valueOf(20));
 		manager.updateValues(LocalDate.now(), valueOf(140), valueOf(10), valueOf(30));
 		
-		assertEquals(new BigDecimal("120.0000"), manager.getUpdates().get(0).getGrossValue());
-		assertEquals(new BigDecimal("10.0000"), manager.getUpdates().get(0).getRates());
-		assertEquals(new BigDecimal("20.0000"), manager.getUpdates().get(0).getTaxes());
+		assertThat(valueOf(120), is(equalsBigDecimal(manager.getUpdates().get(0).getGrossValue())));
+		assertThat(valueOf(10), is(equalsBigDecimal(manager.getUpdates().get(0).getRates())));
+		assertThat(valueOf(20), is(equalsBigDecimal(manager.getUpdates().get(0).getTaxes())));
 		
-		assertEquals(new BigDecimal("140.0000"), manager.getLastUpdate().getGrossValue());
-		assertEquals(new BigDecimal("10.0000"), manager.getLastUpdate().getRates());
-		assertEquals(new BigDecimal("30.0000"), manager.getLastUpdate().getTaxes());
+		assertThat(valueOf(140), is(equalsBigDecimal(manager.getLastUpdate().getGrossValue())));
+		assertThat(valueOf(10), is(equalsBigDecimal(manager.getLastUpdate().getRates())));
+		assertThat(valueOf(30), is(equalsBigDecimal(manager.getLastUpdate().getTaxes())));
 	}
 	
 	@Test
@@ -47,9 +49,10 @@ public class AssetUpdateManagerTest {
 		manager.updateValues(LocalDate.now(), null, null, null);
 		
 		assertEquals(manager.getUpdates().size(), 2);
-		assertEquals(new BigDecimal("120.0000"), manager.getUpdates().get(1).getGrossValue());
-		assertEquals(new BigDecimal("10.0000"), manager.getUpdates().get(1).getRates());
-		assertEquals(new BigDecimal("20.0000"), manager.getUpdates().get(1).getTaxes());
+		
+		assertThat(valueOf(120), is(equalsBigDecimal(manager.getUpdates().get(1).getGrossValue())));
+		assertThat(valueOf(10), is(equalsBigDecimal(manager.getUpdates().get(1).getRates())));
+		assertThat(valueOf(20), is(equalsBigDecimal(manager.getUpdates().get(1).getTaxes())));
 	}
 	
 	@Test(expected = IndexOutOfBoundsException.class)
