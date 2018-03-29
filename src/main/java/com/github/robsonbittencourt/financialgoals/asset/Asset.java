@@ -89,15 +89,15 @@ public class Asset {
 	}
 	
 	public InvestmentReturn getNetProfit(LocalDate initialDate, LocalDate finalDate) {
+		AssetUpdate firstUpdate = assetUpdateManager.getFirstUpdateByDate(initialDate);
 		AssetUpdate lastUpdate = assetUpdateManager.getLastUpdateByDate(finalDate);
 		InvestmentReturn grossProfit = getGrossProfit(initialDate, finalDate);
 		
 		BigDecimal grossProfitValue = grossProfit.getValue();
 		BigDecimal grossProfitPercent = grossProfit.getPercent();
-		BigDecimal rates = lastUpdate.getRates();
-		BigDecimal taxes = lastUpdate.getTaxes();
+		BigDecimal rates = lastUpdate.getRates().subtract(firstUpdate.getRates());
+		BigDecimal taxes = lastUpdate.getTaxes().subtract(firstUpdate.getTaxes());
 		
-		// TODO as taxas e impostos devem ser buscados no período também
 		BigDecimal netProfitValue = grossProfitValue.subtract(rates).subtract(taxes);
 		BigDecimal netProfitPercent = netProfitValue.multiply(grossProfitPercent).divide(grossProfitValue, 4, RoundingMode.HALF_UP);
 		

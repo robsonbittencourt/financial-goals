@@ -153,8 +153,8 @@ public class AssetTest {
 		
 		InvestmentReturn investmentReturn = asset.getNetProfit(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20));
 		
-		assertThat(valueOf(15), is(equalsBigDecimal(investmentReturn.getValue())));
-		assertThat(valueOf(0.1), is(equalsBigDecimal(investmentReturn.getPercent())));
+		assertThat(valueOf(40), is(equalsBigDecimal(investmentReturn.getValue())));
+		assertThat(valueOf(0.2666), is(equalsBigDecimal(investmentReturn.getPercent())));
 	}
 	
 	@Test
@@ -177,8 +177,8 @@ public class AssetTest {
 		
 		InvestmentReturn investmentReturn = asset.getRealProfit(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20));
 		
-		assertThat(valueOf(14.973), is(equalsBigDecimal(investmentReturn.getValue())));
-		assertThat(valueOf(0.0998), is(equalsBigDecimal(investmentReturn.getPercent())));
+		assertThat(valueOf(39.973), is(equalsBigDecimal(investmentReturn.getValue())));
+		assertThat(valueOf(0.2665), is(equalsBigDecimal(investmentReturn.getPercent())));
 	}
 	
 	@Test
