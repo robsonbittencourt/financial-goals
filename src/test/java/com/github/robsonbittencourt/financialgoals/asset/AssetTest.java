@@ -54,7 +54,7 @@ public class AssetTest {
 
 		asset.makeTransaction(LocalDate.now(), valueOf(100));
 
-		assertThat(valueOf(200), is(equalsBigDecimal(asset.getGrossValue())));
+		assertThat(valueOf(200), is(equalsBigDecimal(asset.getResume().getGrossValue())));
 	}
 
 	@Test
@@ -72,8 +72,8 @@ public class AssetTest {
 	public void shouldCalculateGrossProfitWhenDoNotHaveUpdates() {
 		Asset asset = new Asset(LocalDate.now(), "CDB Itaú Bank", FIX, valueOf(100));
 
-		assertThat(valueOf(0), is(equalsBigDecimal(asset.getGrossProfit().getValue())));
-		assertThat(valueOf(0), is(equalsBigDecimal(asset.getGrossProfit().getPercent())));
+		assertThat(valueOf(0), is(equalsBigDecimal(asset.getResume().getGrossProfit().getValue())));
+		assertThat(valueOf(0), is(equalsBigDecimal(asset.getResume().getGrossProfit().getPercent())));
 	}
 
 	@Test
@@ -82,8 +82,8 @@ public class AssetTest {
 
 		asset.updateValues(LocalDate.of(2018, MARCH, 10), valueOf(120), valueOf(10), valueOf(15));
 		
-		assertThat(valueOf(20), is(equalsBigDecimal(asset.getGrossProfit().getValue())));
-		assertThat(valueOf(0.2), is(equalsBigDecimal(asset.getGrossProfit().getPercent())));
+		assertThat(valueOf(20), is(equalsBigDecimal(asset.getResume().getGrossProfit().getValue())));
+		assertThat(valueOf(0.2), is(equalsBigDecimal(asset.getResume().getGrossProfit().getPercent())));
 	}
 
 	@Test
@@ -93,8 +93,8 @@ public class AssetTest {
 		asset.updateValues(LocalDate.of(2018, MARCH, 10), valueOf(120), valueOf(10), valueOf(15));
 		asset.updateValues(LocalDate.of(2018, APRIL, 10), valueOf(150), valueOf(10), valueOf(15));
 
-		assertThat(valueOf(50), is(equalsBigDecimal(asset.getGrossProfit().getValue())));
-		assertThat(valueOf(0.5), is(equalsBigDecimal(asset.getGrossProfit().getPercent())));
+		assertThat(valueOf(50), is(equalsBigDecimal(asset.getResume().getGrossProfit().getValue())));
+		assertThat(valueOf(0.5), is(equalsBigDecimal(asset.getResume().getGrossProfit().getPercent())));
 	}
 
 	@Test
@@ -105,10 +105,10 @@ public class AssetTest {
 		asset.updateValues(LocalDate.of(2018, APRIL, 10), valueOf(150), valueOf(10), valueOf(15));
 		asset.updateValues(LocalDate.of(2018, MAY, 10), valueOf(200), valueOf(10), valueOf(15));
 		
-		InvestmentReturn investmentReturn = asset.getGrossProfit(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20));
+		Profit profit = asset.getResume(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20)).getGrossProfit();
 
-		assertThat(valueOf(50), is(equalsBigDecimal(investmentReturn.getValue())));
-		assertThat(valueOf(0.3333), is(equalsBigDecimal(investmentReturn.getPercent())));
+		assertThat(valueOf(50), is(equalsBigDecimal(profit.getValue())));
+		assertThat(valueOf(0.3333), is(equalsBigDecimal(profit.getPercent())));
 	}
 	
 	@Test
@@ -117,10 +117,10 @@ public class AssetTest {
 
 		asset.updateValues(LocalDate.of(2018, MARCH, 10), valueOf(120), valueOf(10), valueOf(15));
 		
-		InvestmentReturn investmentReturn = asset.getGrossProfit(LocalDate.of(2018, FEBRUARY, 10), LocalDate.of(2018, MARCH, 20));
+		Profit profit = asset.getResume(LocalDate.of(2018, FEBRUARY, 10), LocalDate.of(2018, MARCH, 20)).getGrossProfit();
 
-		assertThat(valueOf(20), is(equalsBigDecimal(investmentReturn.getValue())));
-		assertThat(valueOf(0.2), is(equalsBigDecimal(investmentReturn.getPercent())));
+		assertThat(valueOf(20), is(equalsBigDecimal(profit.getValue())));
+		assertThat(valueOf(0.2), is(equalsBigDecimal(profit.getPercent())));
 	}
 
 	@Test
@@ -129,8 +129,8 @@ public class AssetTest {
 
 		asset.updateValues(LocalDate.of(2018, MARCH, 10), valueOf(550), valueOf(10), valueOf(15));
 		
-		assertThat(valueOf(50), is(equalsBigDecimal(asset.getGrossProfit().getValue())));
-		assertThat(valueOf(0.1), is(equalsBigDecimal(asset.getGrossProfit().getPercent())));
+		assertThat(valueOf(50), is(equalsBigDecimal(asset.getResume().getGrossProfit().getValue())));
+		assertThat(valueOf(0.1), is(equalsBigDecimal(asset.getResume().getGrossProfit().getPercent())));
 	}
 	
 	@Test
@@ -139,8 +139,8 @@ public class AssetTest {
 
 		asset.updateValues(LocalDate.of(2018, MARCH, 10), valueOf(550), valueOf(10), valueOf(15));
 		
-		assertThat(valueOf(25), is(equalsBigDecimal(asset.getNetProfit().getValue())));
-		assertThat(valueOf(0.05), is(equalsBigDecimal(asset.getNetProfit().getPercent())));
+		assertThat(valueOf(25), is(equalsBigDecimal(asset.getResume().getNetProfit().getValue())));
+		assertThat(valueOf(0.05), is(equalsBigDecimal(asset.getResume().getNetProfit().getPercent())));
 	}
 	
 	@Test
@@ -151,10 +151,10 @@ public class AssetTest {
 		asset.updateValues(LocalDate.of(2018, APRIL, 10), valueOf(150), valueOf(10), valueOf(15));
 		asset.updateValues(LocalDate.of(2018, MAY, 10), valueOf(200), valueOf(15), valueOf(20));
 		
-		InvestmentReturn investmentReturn = asset.getNetProfit(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20));
+		Profit profit = asset.getResume(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20)).getNetProfit();
 		
-		assertThat(valueOf(40), is(equalsBigDecimal(investmentReturn.getValue())));
-		assertThat(valueOf(0.2666), is(equalsBigDecimal(investmentReturn.getPercent())));
+		assertThat(valueOf(40), is(equalsBigDecimal(profit.getValue())));
+		assertThat(valueOf(0.2666), is(equalsBigDecimal(profit.getPercent())));
 	}
 	
 	@Test
@@ -163,8 +163,8 @@ public class AssetTest {
 
 		asset.updateValues(LocalDate.of(2018, MARCH, 10), valueOf(550), valueOf(10), valueOf(15));
 		
-		assertThat(valueOf(24.973), is(equalsBigDecimal(asset.getRealProfit().getValue())));
-		assertThat(valueOf(0.0499), is(equalsBigDecimal(asset.getRealProfit().getPercent())));
+		assertThat(valueOf(24.973), is(equalsBigDecimal(asset.getResume().getRealProfit().getValue())));
+		assertThat(valueOf(0.0499), is(equalsBigDecimal(asset.getResume().getRealProfit().getPercent())));
 	}
 	
 	@Test
@@ -175,10 +175,10 @@ public class AssetTest {
 		asset.updateValues(LocalDate.of(2018, APRIL, 10), valueOf(150), valueOf(10), valueOf(15));
 		asset.updateValues(LocalDate.of(2018, MAY, 10), valueOf(200), valueOf(15), valueOf(20));
 		
-		InvestmentReturn investmentReturn = asset.getRealProfit(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20));
+		Profit profit = asset.getResume(LocalDate.of(2018, APRIL, 10), LocalDate.of(2018, MAY, 20)).getRealProfit();
 		
-		assertThat(valueOf(39.973), is(equalsBigDecimal(investmentReturn.getValue())));
-		assertThat(valueOf(0.2665), is(equalsBigDecimal(investmentReturn.getPercent())));
+		assertThat(valueOf(39.973), is(equalsBigDecimal(profit.getValue())));
+		assertThat(valueOf(0.2665), is(equalsBigDecimal(profit.getPercent())));
 	}
 	
 	@Test
@@ -218,7 +218,7 @@ public class AssetTest {
 		
 		asset.updateValues(LocalDate.of(2018, MARCH, 31), valueOf(10922), valueOf(0), valueOf(0));
 		
-		assertThat(asset.getGrossProfit().getValue(), is(equalsBigDecimal(valueOf(-78))));
-		assertThat(asset.getGrossProfit().getPercent(), is(equalsBigDecimal(valueOf(-0.0089))));
+		assertThat(asset.getResume().getGrossProfit().getValue(), is(equalsBigDecimal(valueOf(-78))));
+		assertThat(asset.getResume().getGrossProfit().getPercent(), is(equalsBigDecimal(valueOf(-0.0089))));
 	}
 }

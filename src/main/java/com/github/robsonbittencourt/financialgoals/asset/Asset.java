@@ -1,13 +1,7 @@
 package com.github.robsonbittencourt.financialgoals.asset;
 
-import static com.github.robsonbittencourt.financialgoals.indicators.IndicatorType.INFLATION;
-import static java.math.RoundingMode.HALF_UP;
-
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
-
-import com.github.robsonbittencourt.financialgoals.indicators.Indicator;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -44,86 +38,24 @@ public class Asset {
 		assetUpdateManager.updateValues(date, grossValue, rates, taxes);
 	}
 
-	public BigDecimal getGrossValue() {
-		return assetUpdateManager.getLastUpdate().getGrossValue();
-	}
-
-	public InvestmentReturn getGrossProfit() {
-		LocalDate finalDate = assetUpdateManager.getLastUpdate().getDate();
-		
-		return getGrossProfit(initialDate, finalDate);
-	}
-
-	public InvestmentReturn getGrossProfit(LocalDate initialDate, LocalDate finalDate) {
-		AssetUpdate firstUpdate = assetUpdateManager.getFirstUpdateByDate(initialDate);
-		AssetUpdate lastUpdate = assetUpdateManager.getLastUpdateByDate(finalDate);
-		
-		BigDecimal transactionsValue = assetUpdateManager.getUpdates()
-														 .stream()
-														 .filter(u -> inRange(u.getDate(), initialDate, finalDate))
-														 .map(u -> u.getTransactionValue())
-														 .reduce(BigDecimal.ZERO, BigDecimal::add);
-		
-		BigDecimal value = lastUpdate.getGrossValue().subtract(transactionsValue).subtract(firstUpdate.getGrossValue());
-		BigDecimal percent = lastUpdate.getShareValue().divide(firstUpdate.getShareValue(), 4, HALF_UP).subtract(BigDecimal.ONE);
-		
-		return new InvestmentReturn(value, percent);
+	public AssetSummary getResume() {
+		return AssetSummary.builder()
+						   .grossValue(assetUpdateManager.getLastUpdate().getGrossValue())
+						   .grossProfit(new GrossProfit(assetUpdateManager))
+						   .netValue(assetUpdateManager.getLastUpdate().getNetValue())
+						   .netProfit(new NetProfit(assetUpdateManager))
+						   .realProfit(new RealProfit(assetUpdateManager))
+						   .build();
 	}
 	
-	private boolean inRange(LocalDate date, LocalDate initialDate, LocalDate finalDate) {
-		if (date.equals(initialDate) || date.equals(finalDate)) {
-			return true;
-		}
-		
-		return date.isAfter(initialDate) && date.isBefore(finalDate);
+	public AssetSummary getResume(LocalDate initialDate, LocalDate finalDate) {
+		return AssetSummary.builder()
+						   .grossValue(assetUpdateManager.getLastUpdateByDate(finalDate).getGrossValue())
+						   .grossProfit(new GrossProfit(assetUpdateManager, initialDate, finalDate))
+						   .netValue(assetUpdateManager.getLastUpdateByDate(finalDate).getNetValue())
+						   .netProfit(new NetProfit(assetUpdateManager, initialDate, finalDate))
+						   .realProfit(new RealProfit(assetUpdateManager, initialDate, finalDate))
+						   .build();
 	}
 
-	public BigDecimal getNetValue() {
-		return assetUpdateManager.getLastUpdate().getNetValue();
-	}
-
-	public InvestmentReturn getNetProfit() {
-		LocalDate finalDate = assetUpdateManager.getLastUpdate().getDate();
-		
-		return getNetProfit(initialDate, finalDate);
-	}
-	
-	public InvestmentReturn getNetProfit(LocalDate initialDate, LocalDate finalDate) {
-		AssetUpdate firstUpdate = assetUpdateManager.getFirstUpdateByDate(initialDate);
-		AssetUpdate lastUpdate = assetUpdateManager.getLastUpdateByDate(finalDate);
-		InvestmentReturn grossProfit = getGrossProfit(initialDate, finalDate);
-		
-		BigDecimal grossProfitValue = grossProfit.getValue();
-		BigDecimal grossProfitPercent = grossProfit.getPercent();
-		BigDecimal rates = lastUpdate.getRates().subtract(firstUpdate.getRates());
-		BigDecimal taxes = lastUpdate.getTaxes().subtract(firstUpdate.getTaxes());
-		
-		BigDecimal netProfitValue = grossProfitValue.subtract(rates).subtract(taxes);
-		BigDecimal netProfitPercent = netProfitValue.multiply(grossProfitPercent).divide(grossProfitValue, 4, RoundingMode.HALF_UP);
-		
-		return new InvestmentReturn(netProfitValue, netProfitPercent);
-	}
-	
-	public InvestmentReturn getRealProfit() {
-		LocalDate finalDate = assetUpdateManager.getLastUpdate().getDate();
-		
-		return getRealProfit(initialDate, finalDate);
-	}
-
-	public InvestmentReturn getRealProfit(LocalDate initialDate, LocalDate finalDate) {
-		InvestmentReturn grossProfit = getGrossProfit(initialDate, finalDate);
-		BigDecimal grossProfitValue = grossProfit.getValue();
-		BigDecimal grossProfitPercent = grossProfit.getPercent();
-
-		BigDecimal netProfitValue = getNetProfit(initialDate, finalDate).getValue();
-
-		BigDecimal inflation = new Indicator().getIndicator(INFLATION, initialDate, finalDate);
-		BigDecimal inflationDiscount = grossProfitValue.multiply(inflation);
-		
-		BigDecimal realProfitValue = netProfitValue.subtract(inflationDiscount);
-		BigDecimal realProfitPercent = realProfitValue.multiply(grossProfitPercent).divide(grossProfitValue, 4, RoundingMode.HALF_UP);
-
-		return new InvestmentReturn(realProfitValue, realProfitPercent);
-	}
-	
 }
